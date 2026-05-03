@@ -5,6 +5,7 @@ app.use(express.json());
 app.listen(port, () => {
     console.log("Servidor abierto");
 });
+/** CREACIÓN DE LAS LISTAS */
 let series=[ {id: 1,titulo: "The Bridgerton", genero:"Romance", temporadas: 4, plataforma: "Netflix", estreno: 2020, finalizada: false, director:"Chris Van Dusen", nota: 9},
     {id: 2,titulo: "Sex And The City", genero:"Romance", temporadas: 6, plataforma: "Netflix", estreno: 1998, finalizada: true, director:"Darren Star", nota: 9},
     {id: 3,titulo: "Never Have I Ever", genero:"Comedia", temporadas: 4, plataforma: "Netflix", estreno: 2020, finalizada: true, director:"Mindy Kaling", nota: 10},
@@ -19,10 +20,9 @@ let actores=[{ id: 1, nombre: "Claudia Jessie", edad: 36, nacionalidad: "Britán
 {id: 4,nombre: "Leighton Meester", edad: 40, nacionalidad: "Estadounidense", serie:"Gossip Girl", personaje: "Blair Waldorf"},
 {id: 5,nombre: "Gemma Cuervo", edad: 91, nacionalidad: "Española", serie:"Aquí no hay quien viva", personaje: "Vicenta Benito"},
 {id: 6,nombre: "Marisa Porcel", edad:74, nacionalidad: "Española", serie:"Escenas de matrimonio", personaje: "Pepa Gutiérrez"}]
+ 
+/** MÉTODOS LISTA PRINCIPAL */
 
- app.get("/series", (req, res) => {
-        return res.json(series);
-    });
     app.get("/series/:id", (req, res) => {
         const serie = series.find(series => series.id === Number(req.params.id));
         return res.json(serie);
@@ -61,13 +61,13 @@ app.delete("/borrar-serie", (req,res) => {
     series.splice(index, 1)
     return res.send("La serie: " + req.body.id + " ha sido eliminada.")
 })
-/*APARTADO PELÍCULAS */
+/*MÉTODOS ACTORES */
 app.get("/actores", (req, res) => {
         return res.json(actores);
     });
     app.get("/actores/:id", (req, res) => {
-        const serie = series.find(actores => actores.id === Number(req.params.id));
-        return res.json(actores);
+        const actor = actores.find(actores => actores.id === Number(req.params.id));
+        return res.json(actor);
     });
     app.post("/guardar-actor", (req,res) =>{
     let nuevoActor = {
@@ -100,5 +100,49 @@ app.delete("/borrar-actor", (req,res) => {
     actores.splice(index, 1)
     return res.send("El actor/la actriz: " + req.body.id + " ha sido eliminado/a.")
 })
+app.get("/series", (req,res) =>{
+    const genero=req.query.genero;
+  if (!genero) {
+        return res.json(series);
+    }
+    const resultado= series.filter(serie => serie.genero.toLowerCase().includes(genero.toLowerCase()));
+res.json(resultado);
+});
+app.get("/series-nota", (req,res)=>{
+    const nota= req.query.nota;
+    const resultado=series.filter(serie=>serie.nota>nota);
+    res.json(resultado);
+});
+app.get("/actores-orden", (req,res)=>{
+    const orden=req.query.orden;
+    if(orden.toLowerCase().includes("asc")){
+        actores.sort((a,b)=>
+        a.nombre.localeCompare(b.nombre))
+    }else if(orden.toLowerCase().includes("desc")){
+        actores.sort((a,b)=>
+        b.nombre.localeCompare(a.nombre));
+    }else{
+        return res.status(400).json({
+            error: 'Datos inválidos, debe usar "asc" o "desc'
+        });
+    }
+    return res.json(actores);
+})
+app.get("/series-terminada",(req,res)=>{
+const fin=req.query.fin;
+if(fin.toLowerCase()==="true"){
+    const resultado=series.filter(serie =>serie.finalizada ===true);
+return res.json(resultado);
+}else if(fin.toLowerCase()==="false"){
+        const resultado=series.filter(serie =>serie.finalizada===false);
+return res.json(resultado);
+}else{
+        return res.status(400).json({
+            error: 'Datos inválidos, debe usar "true" o "false"'
+        });
+    }
+
+})
+
 
 
