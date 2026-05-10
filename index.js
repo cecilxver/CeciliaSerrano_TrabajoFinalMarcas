@@ -129,20 +129,61 @@ app.get("/actores-orden", (req,res)=>{
     return res.json(actores);
 })
 app.get("/series-terminada",(req,res)=>{
-const fin=req.query.fin;
-if(fin.toLowerCase()==="true"){
-    const resultado=series.filter(serie =>serie.finalizada ===true);
-return res.json(resultado);
-}else if(fin.toLowerCase()==="false"){
-        const resultado=series.filter(serie =>serie.finalizada===false);
-return res.json(resultado);
-}else{
-        return res.status(400).json({
-            error: 'Datos inválidos, debe usar "true" o "false"'
-        });
-    }
+    const fin=req.query.fin;
+    if(fin.toLowerCase()==="true"){
+        const resultado=series.filter(serie =>serie.finalizada ===true);
+    return res.json(resultado);
 
-})
+    }else if(fin.toLowerCase()==="false"){
+            const resultado=series.filter(serie =>serie.finalizada===false);
+    return res.json(resultado);
+    }else{
+            return res.status(400).json({
+                error: 'Datos inválidos, debe usar "true" o "false"'
+            });
+        }
+
+    })
+    app.get("/calcular-maxima-nota",(req,res)=>{
+        const notas = series.map(serie => serie.nota);
+       let max = notas[0];
+        for (let index = 0; index < notas.length; index++) {
+            if(notas[index]> max){
+            max = notas[index];
+            }
+            
+        }
+        return res.json ("La máxima nota es "+max);
+    });
+    
+    app.get("/series-ranking", (req,res)=>{
+        const n=req.query.n;
+        if(!n|| n<=0){
+            return res.status(400).json({
+                error: "Debes un número válido en n"
+            });
+        }
+        const resultado = series
+        .sort((a,b) => b.nota - a.nota)
+        .slice(0,n);
+        res.json(resultado);
+    })
+    app.get("/total-actores", (req,res)=>{
+         res.json("Son en total "+actores.length+" actores");
+    })
+    app.get("/series-por-genero",(req,res)=>{
+        const resultado={};
+        series.forEach(serie => {
+            const genero = serie.genero;
+            if(resultado[genero]){
+                resultado[genero]++;
+            }else{
+                resultado[genero]=1
+            }
+        }
+        )
+         return res.json(resultado);
+    })
 
 
 
