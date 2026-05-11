@@ -1,10 +1,12 @@
 const express = require('express');
 const app = express();
 const port = 9999;
+const cors = require("cors");
 app.use(express.json());
 app.listen(port, () => {
     console.log("Servidor abierto");
 });
+app.use(cors());
 /** CREACIÓN DE LAS LISTAS */
 let series=[ {id: 1,titulo: "The Bridgerton", genero:"Romance", temporadas: 4, plataforma: "Netflix", estreno: 2020, finalizada: false, director:"Chris Van Dusen", nota: 9},
     {id: 2,titulo: "Sex And The City", genero:"Romance", temporadas: 6, plataforma: "Netflix", estreno: 1998, finalizada: true, director:"Darren Star", nota: 9},
@@ -24,10 +26,23 @@ let actores=[{ id: 1, nombre: "Claudia Jessie", edad: 36, nacionalidad: "Britán
 /** MÉTODOS LISTA PRINCIPAL */
 
     app.get("/series/:id", (req, res) => {
+        try{
         const serie = series.find(series => series.id === Number(req.params.id));
+        if (!serie) {
+
+            return res.status(404).json({
+                error: "Serie no encontrada"
+            });
+        }
         return res.json(serie);
-    });
+    } catch (error) {
+
+   return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}});
     app.post("/guardar-serie", (req,res) =>{
+        try{
     let nuevaSerie = {
         id: series.length+1,
         titulo: req.body.titulo,
@@ -39,11 +54,30 @@ let actores=[{ id: 1, nombre: "Claudia Jessie", edad: 36, nacionalidad: "Britán
         director: req.body.director,
         nota: req.body.nota
     }
+    if(
+    !req.body.titulo ||
+    !req.body.genero ||
+    !req.body.temporadas ||
+    !req.body.plataforma ||
+    !req.body.estreno ||
+    req.body.finalizada === undefined ||
+    !req.body.director ||
+    !req.body.nota
+){
+    return res.status(400).json({
+        error: "Datos incompletos"
+    })
+}
 
     series.push(nuevaSerie);
-    return res.status(200).json(nuevaSerie);
-})
+    return res.status(201).json(nuevaSerie);
+}catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 app.put("/actualizar-serie", (req,res) => {
+    try{
     series[req.body.id-1].id = req.body.id;
     series[req.body.id-1].titulo = req.body.titulo;
     series[req.body.id-1].temporadas = req.body.temporadas;
@@ -52,24 +86,69 @@ app.put("/actualizar-serie", (req,res) => {
     series[req.body.id-1].finalizada = req.body.finalizada;
     series[req.body.id-1].director = req.body.director;
     series[req.body.id-1].nota = req.body.nota;
+       if(
+    !req.body.titulo ||
+    !req.body.genero ||
+    !req.body.temporadas ||
+    !req.body.plataforma ||
+    !req.body.estreno ||
+    req.body.finalizada === undefined ||
+    !req.body.director ||
+    !req.body.nota
+){
+    return res.status(400).json({
+        error: "Para actualizar una serie, debes añadir todos los datos de esta."
+    })}
 
     return res.json(series[req.body.id-1])
-})
+}catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 
 app.delete("/borrar-serie", (req,res) => {
+    try{
     const index = series.findIndex(a => a.id == req.body.id)
+    if(index === -1){ //si no se encuentra, findIndex devolverá -1
+        return res.status(404)({
+            error: "Serie no encontrada"
+        })
+    }
     series.splice(index, 1)
     return res.send("La serie: " + req.body.id + " ha sido eliminada.")
-})
+}catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 /*MÉTODOS ACTORES */
 app.get("/actores", (req, res) => {
+    try{
         return res.json(actores);
-    });
+    }catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   })
+}});  
     app.get("/actores/:id", (req, res) => {
+        try{
         const actor = actores.find(actores => actores.id === Number(req.params.id));
+
+        if (!actor) {
+
+            return res.status(404).json({
+                error: "Actor no encontrado"
+            });
+        }
         return res.json(actor);
-    });
+    }catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
     app.post("/guardar-actor", (req,res) =>{
+        try{
     let nuevoActor = {
         id: actores.length+1,
         nombre: req.body.nombre,
@@ -79,27 +158,60 @@ app.get("/actores", (req, res) => {
         personaje: req.body.personaje,
 
     }
-
+    if(
+    !req.body.nombre ||
+    !req.body.edad ||
+    !req.body.nacionalidad ||
+    !req.body.serie ||
+    !req.body.personaje
+){
+    return res.status(400).json({
+        error: "Datos incompletos"
+    })
+}
     series.push(nuevoActor);
     return res.status(200).json(nuevoActor);
-})
+    }catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 app.put("/actualizar-actor", (req,res) => {
+    try{
     actores[req.body.id-1].id = req.body.id;
     actores[req.body.id-1].nombre = req.body.nombre;
     actores[req.body.id-1].edad = req.body.edad;
     actores[req.body.id-1].nacionalidad = req.body.nacionalidad;
     actores[req.body.id-1].serie = req.body.serie;
     actores[req.body.id-1].personaje= req.body.personaje;
+      if(
+    !req.body.nombre ||
+    !req.body.edad ||
+    !req.body.nacionalidad ||
+    !req.body.serie ||
+    !req.body.personaje
+){
+    return res.status(400).json({
+        error: "Datos incompletos"
+    })}
     
-
-    return res.json(actores[req.body.id-1])
-})
+   return res.status(200).json(actores[req.body.id-1])
+   }catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 
 app.delete("/borrar-actor", (req,res) => {
+    try{
     const index = actores.findIndex(a => a.id == req.body.id)
     actores.splice(index, 1)
-    return res.send("El actor/la actriz: " + req.body.id + " ha sido eliminado/a.")
-})
+    return res.status(200).json;
+       }catch{
+ return res.status(500).json({
+      error: "Error interno del servidor"
+   });
+}})
 app.get("/series", (req,res) =>{
     const genero=req.query.genero;
   if (!genero) {
@@ -184,6 +296,3 @@ app.get("/series-terminada",(req,res)=>{
         )
          return res.json(resultado);
     })
-
-
-
