@@ -22,11 +22,35 @@
 
 <div id="resultadoPersonajes" class="container"></div>
 
-<input type="text" id="genero">
+<input type="text" id="verGenero">
 
 <button onclick="buscarGenero()">
     Buscar género
 </button>
 <div id="GeneroContainer" class="container"></div>
+<section>
+    <form  id="formulario">
+    <label for="titulo">Titulo: </label>
+    <input type="text" name="titulo" id="titulo" >
+    <label for="genero">Género: </label>
+    <input type="text" name="genero" id="genero" >
+    <label for="temporadas">Nº de temporadas: </label>
+    <input type="number" name="temporadas" id="temporadas">
+    <label for="plataforma">Plataforma:</label>
+    <input type="text" name="plataforma" id="plataforma">
+    <label for="estreno">Año de estreno:</label>
+    <input type="number" name="estreno" id="estreno">
+    <label for="finalizada">Finalizada:</label>
+    <input type="checkbox" name="finalizada" id="finalizada">
+    <label for="director">Director:</label>
+    <input type="text" name="director" id="director">
+    <label for="actores">Actores:</label>
+    <input type="text" name="actores" id="actores">
+    <label for="nota">Nota:</label>
+    <input type="number" name="nota" id="nota">  
+    <input type="submit">
+    </form>
+</section>
+<script src="script.js"></script>
 </body>
 </html>

@@ -1,3 +1,6 @@
+/**
+ * TODO Añadir Try-Catch
+ */
 async function cargarSeries() {
 
     const respuesta = await fetch(
@@ -19,6 +22,9 @@ async function cargarSeries() {
         </div>
     `).join("");
 }
+/*async function buscarSeriePorID(params) {
+    
+}*/
 async function cargarActores() {
 
     const respuesta = await fetch(
@@ -40,9 +46,10 @@ async function cargarActores() {
 `).join("");
 }
 async function buscarGenero() {
+    try{
 
     const genero =
-        document.getElementById("genero").value;
+        document.getElementById("verGenero").value;
 
     const respuesta = await fetch(
         `http://localhost:9999/series?genero=${genero}`
@@ -60,4 +67,46 @@ async function buscarGenero() {
             <p>★ ${serie.nota}</p>
         </div>
     `).join("");
+    }catch(error){
+    alert(error);
+    }
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+    const formulario = document.getElementById("formulario"); // solo una vez
+
+    formulario.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const nuevaSerie = {
+            titulo: document.getElementById("titulo").value,
+            genero: document.getElementById("genero").value,
+            temporadas: Number(document.getElementById("temporadas").value),
+            plataforma: document.getElementById("plataforma").value,
+            estreno: document.getElementById("estreno").value,
+            finalizada: document.getElementById("finalizada").checked,
+            director: document.getElementById("director").value,
+            actores: document.getElementById("actores").value.split(","),
+            nota: Number(document.getElementById("nota").value)
+        };
+
+        try {
+            const respuesta = await fetch("http://localhost:9999/guardar-serie", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(nuevaSerie)
+            });
+
+            const datos = await respuesta.json();
+            console.log(datos);
+            alert("Serie guardada");
+
+        } catch(error) {
+            console.log(error);
+        }
+    });
+
+    // El resto de tus funciones (cargarSeries, cargarActores, etc.) también aquí dentro
+
+});
+
