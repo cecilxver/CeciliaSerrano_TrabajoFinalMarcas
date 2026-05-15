@@ -1,16 +1,51 @@
-
-    async function cargarSeries() {
+// ── AÑADIDO: Navegación por tabs ─────────────────────────────
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.classList.toggle('active', tab.id === 'tab-' + tabName);
+  });
+}
+ 
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+ 
+// ── AÑADIDO: Sistema de toast ─────────────────────────────────
+let toastTimer;
+function showToast(msg, type = 'success') {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.className = 'toast ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toast.classList.add('hidden'), 3500);
+}
+ 
+// ── AÑADIDO: Carga automática al iniciar ─────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  cargarSeries();
+  cargarActores();
+});
+ 
+// ════════════════════════════════════════════════════════════
+//  CÓDIGO ORIGINAL — NO MODIFICADO
+// ════════════════════════════════════════════════════════════
+ 
+async function cargarSeries() {
 try{
+    document.getElementById("resultado").innerHTML = "";
     const respuesta = await fetch(
         "http://localhost:9999/series"
     );
-
+ 
     const datos = await respuesta.json();
-
+ 
     console.log(datos);
-
+ 
     document.getElementById("resultado").innerHTML = datos.map(serie => `
          <div class="card">
+            <div class="card-id"># ${serie.id}</div>
             <h3>${serie.titulo}</h3>
             <p>${serie.genero} · ${serie.temporadas} temporadas</p>
             <p>${serie.plataforma} · ${serie.estreno}</p>
@@ -24,19 +59,20 @@ try{
         alert(error)
     }
 }
-
+ 
     async function cargarActores() {
     try{
     const respuesta = await fetch(
         "http://localhost:9999/actores"
     );
-
+ 
     const datos = await respuesta.json();
-
+ 
     console.log(datos);
-
+ 
     document.getElementById("resultadoPersonajes").innerHTML = datos.map(actores => `
         <div class="card">
+            <div class="card-id"># ${actores.id}</div>
             <h3>${actores.nombre}</h3>
             <p>Edad: ${actores.edad} años</p>
             <p>Nacionalidad: ${actores.nacionalidad}</p>
@@ -47,9 +83,10 @@ try{
 }catch(error){
     alert(error)
 }}
-
+ 
     async function busquedaAvanzada() {
     const campos = {
+        id:           document.getElementById("b-id").value,
         titulo:       document.getElementById("b-titulo").value,
         genero:       document.getElementById("b-genero").value,
         plataforma:   document.getElementById("b-plataforma").value,
@@ -63,8 +100,8 @@ try{
         temporadasMin: document.getElementById("b-temporadasMin").value,
         temporadasMax: document.getElementById("b-temporadasMax").value,
     };
-
-    // Solo añade a la URL los campos que tengan valor
+ 
+    document.getElementById("resultado").innerHTML = "";
     const params = new URLSearchParams();
     for (const [clave, valor] of Object.entries(campos)) {
         if (valor !== "" && valor !== null) {
@@ -75,8 +112,9 @@ try{
     const respuesta = await fetch(`http://localhost:9999/series/buscar?${params.toString()}`);
     const datos = await respuesta.json();
     console.log(datos);
-    document.getElementById("GeneroContainer").innerHTML =datos.map(serie => `
+    document.getElementById("resultado").innerHTML = datos.map(serie => `
          <div class="card">
+            <div class="card-id"># ${serie.id}</div>
             <h3>${serie.titulo}</h3>
             <p>${serie.genero} · ${serie.temporadas} temporadas</p>
             <p>${serie.plataforma} · ${serie.estreno}</p>
@@ -86,17 +124,17 @@ try{
             <p>★ ${serie.nota}</p>
         </div>
     `).join("");
-
-
+ 
+ 
     const formulario = document.getElementById("formulario"); 
 }catch(error){
     alert(error)
-
+ 
 }}
 //CREAR SERIE
     formulario.addEventListener("submit", async (e) => {
         e.preventDefault();
-
+ 
         const nuevaSerie = {
             titulo: document.getElementById("titulo").value,
             genero: document.getElementById("genero").value,
@@ -108,26 +146,26 @@ try{
             actores: document.getElementById("actores").value.split(","),
             nota: Number(document.getElementById("nota").value)
         };
-
+ 
         try {
             const respuesta = await fetch("http://localhost:9999/guardar-serie", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(nuevaSerie)
             });
-
+ 
             const datos = await respuesta.json();
             console.log(datos);
             alert("Serie guardada");
-
+ 
         } catch(error) {
             console.log(error);
         }
     });
-
+ 
     document.getElementById("formularioActor").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     
      const nuevoActor = {
         nombre:       document.getElementById("nombre").value.trim(),
@@ -136,16 +174,16 @@ try{
         serie:        document.getElementById("serie").value.trim(),
         personaje:    document.getElementById("personaje").value.trim()
     };
-
+ 
     try {
         const res = await fetch("http://localhost:9999/guardar-actor", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(nuevoActor)
         });
-
+ 
         const data = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + data.error);
         } else {
@@ -156,10 +194,10 @@ try{
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioActualizarActor").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const actorActualizado = {
         id:           Number(document.getElementById("id-actualizar").value),
         nombre:       document.getElementById("nombre-actualizar").value.trim(),
@@ -168,16 +206,16 @@ document.getElementById("formularioActualizarActor").addEventListener("submit", 
         serie:        document.getElementById("serie-actualizar").value.trim(),
         personaje:    document.getElementById("personaje-actualizar").value.trim()
     };
-
+ 
     try {
         const res = await fetch("http://localhost:9999/actualizar-actor", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(actorActualizado)
         });
-
+ 
         const data = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + data.error);
         } else {
@@ -188,26 +226,26 @@ document.getElementById("formularioActualizarActor").addEventListener("submit", 
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioBorrarActor").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const id = Number(document.getElementById("id-borrar").value);
-
+ 
     if (!id) {
         alert("Introduce un ID válido.");
         return;
     }
-
+ 
     if (!confirm(`¿Seguro que quieres borrar el actor con ID ${id}?`)) return;
-
+ 
     try {
         const res = await fetch("http://localhost:9999/borrar-actor", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: id })
         });
-
+ 
         if (!res.ok) {
             const data = await res.json();
             alert("Error: " + data.error);
@@ -219,10 +257,10 @@ document.getElementById("formularioBorrarActor").addEventListener("submit", asyn
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioActualizarSerie").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const serieActualizada = {
         id:         Number(document.getElementById("id-serie-actualizar").value),
         titulo:     document.getElementById("titulo-actualizar").value.trim(),
@@ -235,16 +273,16 @@ document.getElementById("formularioActualizarSerie").addEventListener("submit", 
         actores:    document.getElementById("actores-actualizar").value.trim().split(",").map(a => a.trim()),
         nota:       Number(document.getElementById("nota-actualizar").value)
     };
-
+ 
     try {
         const res = await fetch("http://localhost:9999/actualizar-serie", {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(serieActualizada)
         });
-
+ 
         const data = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + data.error);
         } else {
@@ -255,26 +293,26 @@ document.getElementById("formularioActualizarSerie").addEventListener("submit", 
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioBorrarSerie").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const id = Number(document.getElementById("id-serie-borrar").value);
-
+ 
     if (!id) {
         alert("Introduce un ID válido.");
         return;
     }
-
+ 
     if (!confirm(`¿Seguro que quieres borrar la serie con ID ${id}?`)) return;
-
+ 
     try {
         const res = await fetch("http://localhost:9999/borrar-serie", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: id })
         });
-
+ 
         if (!res.ok) {
             const data = await res.json();
             alert("Error: " + data.error);
@@ -289,22 +327,23 @@ document.getElementById("formularioBorrarSerie").addEventListener("submit", asyn
 });
 document.getElementById("formularioActoresOrden").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const orden = document.getElementById("orden").value;
-
+ 
     try {
         const res = await fetch(`http://localhost:9999/actores-orden?orden=${orden}`, {
             method: "GET",
             headers: { "Content-Type": "application/json" }
         });
-
+ 
         const datos = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + datos.error); // ✅ datos, no data
         } else {
             document.getElementById("resultadoPersonajes").innerHTML = datos.map(actor => `
                 <div class="card">
+                    <div class="card-id"># ${actor.id}</div>
                     <h3>${actor.nombre}</h3>
                     <p>Edad: ${actor.edad} años</p>
                     <p>Nacionalidad: ${actor.nacionalidad}</p>
@@ -313,22 +352,22 @@ document.getElementById("formularioActoresOrden").addEventListener("submit", asy
                 </div>
             `).join("");
         }
-
+ 
     } catch (error) {
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioMaximaNota").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     try {
         const res = await fetch("http://localhost:9999/calcular-maxima-nota", {
             method: "GET"
         });
-
+ 
         const datos = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + datos.error);
         } else {
@@ -342,24 +381,24 @@ document.getElementById("formularioMaximaNota").addEventListener("submit", async
         alert("No se pudo conectar con el servidor.");
     }
 });
-
+ 
 document.getElementById("formularioRanking").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     const n = document.getElementById("n").value;
-
+ 
     if (!n || n <= 0) {
         alert("Introduce un número válido.");
         return;
     }
-
+ 
     try {
         const res = await fetch(`http://localhost:9999/series-ranking?n=${n}`, {
             method: "GET"
         });
-
+ 
         const datos = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + datos.error);
         } else {
@@ -380,14 +419,14 @@ document.getElementById("formularioRanking").addEventListener("submit", async fu
 });
 document.getElementById("formularioTotalActores").addEventListener("submit", async function(e) {
     e.preventDefault();
-
+ 
     try {
         const res = await fetch("http://localhost:9999/total-actores", {
             method: "GET"
         });
-
+ 
         const datos = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + datos.error);
         } else {
@@ -407,9 +446,9 @@ document.getElementById("formularioSeriesPorGenero").addEventListener("submit", 
         const res = await fetch("http://localhost:9999/series-por-genero", {
             method: "GET"
         });
-
+ 
         const datos = await res.json();
-
+ 
         if (!res.ok) {
             alert("Error: " + datos.error);
         } else {

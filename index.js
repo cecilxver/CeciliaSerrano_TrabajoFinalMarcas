@@ -7,10 +7,7 @@ app.listen(port, () => {
     console.log("Servidor abierto");
 });
 app.use(cors());
-/**
- * TODO:
- * -Terminar fronted
- */
+
 /** CREACIÓN DE LAS LISTAS */
 let series = [
 { id: 1, titulo: "The Bridgerton", genero:"Romance", temporadas: 4, plataforma: "Netflix", estreno: 2020, finalizada: false, director:"Chris Van Dusen", actores:["Claudia Jessie","Sarah Jessica Parker"], nota: 9 },
@@ -38,9 +35,14 @@ app.get("/series", (req,res) =>{
 }});
 app.get("/series/buscar", (req,res)=>{
 try{
-    const { titulo, genero, plataforma, director, actor, finalizada, notaMin, notaMax, 
+    const { id, titulo, genero, plataforma, director, actor, finalizada, notaMin, notaMax, 
     estrenoDes, estrenoDe, estrenoHasta, temporadasMin, temporadasMax } = req.query;   //objeto con todos los parámetros de la URL
 let resultado = [...series]; //crea una copia del array
+if(id){
+    resultado = resultado.filter(function(s) {
+        return s.id==id;
+    });
+}
 if (titulo) { //si hay titulo y no es nulo
     resultado = resultado.filter(function(s) {
         return s.titulo.toLowerCase().includes(titulo.toLowerCase());

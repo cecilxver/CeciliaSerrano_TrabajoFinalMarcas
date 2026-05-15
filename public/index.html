@@ -10,170 +10,261 @@
 
 </head>
 <body>
-<button onclick="cargarSeries()" id="btn-series">
-    Ver series
-</button>
-
-<div id="resultado" class="container"></div>
-
-<button onclick="cargarActores()" id="btn-actores">
-    Ver actores
-</button>
-
-<div id="resultadoPersonajes" class="container"></div>
-
-<div id="GeneroContainer" class="container"></div>
-<section>
-    <form  id="formulario">
-    <label for="titulo">Titulo: </label>
-    <input type="text" name="titulo" id="titulo" >
-    <label for="genero">Género: </label>
-    <input type="text" name="genero" id="genero" >
-    <label for="temporadas">Nº de temporadas: </label>
-    <input type="number" name="temporadas" id="temporadas">
-    <label for="plataforma">Plataforma:</label>
-    <input type="text" name="plataforma" id="plataforma">
-    <label for="estreno">Año de estreno:</label>
-    <input type="number" name="estreno" id="estreno">
-    <label for="finalizada">Finalizada:</label>
-    <input type="checkbox" name="finalizada" id="finalizada">
-    <label for="director">Director:</label>
-    <input type="text" name="director" id="director">
-    <label for="actores">Actores:</label>
-    <input type="text" name="actores" id="actores">
-    <label for="nota">Nota:</label>
-    <input type="number" name="nota" id="nota">  
-    <input type="submit">
-    </form>
-    <input type="text"   id="b-titulo"        placeholder="Título">
-<input type="text"   id="b-genero"        placeholder="Género">
-<input type="text"   id="b-plataforma"    placeholder="Plataforma">
-<input type="text"   id="b-director"      placeholder="Director">
-<input type="text"   id="b-actor"         placeholder="Actor">
-<select id="b-finalizada">
-    <option value="">Todas</option>
-    <option value="true">Finalizada</option>
-    <option value="false">En emisión</option>
-</select>
-<input type="number" id="b-notaMin"       placeholder="Nota mínima">
-<input type="number" id="b-notaMax"       placeholder="Nota máxima">
-<input type="number" id="b-estrenoDe"     placeholder="Estreno desde">
-<input type="number" id="b-estrenoHasta"  placeholder="Estreno hasta">
-<input type="number" id="b-temporadasMin" placeholder="Temporadas mínimo">
-<input type="number" id="b-temporadasMax" placeholder="Temporadas máximo">
-<button onclick="busquedaAvanzada()">Buscar</button>
-<div id="busquedaAvanzadaContainer" class="container"></div>
-</section>
-<br>
-<br>
-<br>
-<form  id="formularioActor">
-    <label for="Nombre">Nombre: </label>
-    <input type="text" name="nombre" id="nombre" >
-    <label for="edad">Edad: </label>
-    <input type="number" name="edad" id="edad" >
-    <label for="nacionalidad">Nacionalidad </label>
-    <input type="text" name="nacionalidad" id="nacionalidad">
-    <label for="serie">Serie</label>
-    <input type="text" name="serie" id="serie">
-    <label for="personaje">Personaje: </label>
-    <input type="text" name="personaje" id="personaje">
-    <input type="submit">
-    </form>
-
-<form id="formularioActualizarActor">
-    <label for="id-actualizar">ID del actor a actualizar:</label>
-    <input type="number" id="id-actualizar" name="id">
-
-    <label for="nombre-actualizar">Nombre:</label>
-    <input type="text" id="nombre-actualizar" name="nombre">
-
-    <label for="edad-actualizar">Edad:</label>
-    <input type="number" id="edad-actualizar" name="edad">
-
-    <label for="nacionalidad-actualizar">Nacionalidad:</label>
-    <input type="text" id="nacionalidad-actualizar" name="nacionalidad">
-
-    <label for="serie-actualizar">Serie:</label>
-    <input type="text" id="serie-actualizar" name="serie">
-
-    <label for="personaje-actualizar">Personaje:</label>
-    <input type="text" id="personaje-actualizar" name="personaje">
-
-    <input type="submit" value="Actualizar">
-
-</form>
-
-<form id="formularioBorrarActor">
-    <label for="id-borrar">ID del actor a borrar:</label>
-    <input type="number" id="id-borrar" name="id">
-    <input type="submit" value="Borrar">
-</form>
-
-<form id="formularioActualizarSerie">
-    <label for="id-serie-actualizar">ID de la serie a actualizar:</label>
-    <input type="number" id="id-serie-actualizar" name="id">
-
-    <label for="titulo-actualizar">Título:</label>
-    <input type="text" id="titulo-actualizar" name="titulo">
-
-    <label for="genero-actualizar">Género:</label>
-    <input type="text" id="genero-actualizar" name="genero">
-
-    <label for="temporadas-actualizar">Temporadas:</label>
-    <input type="number" id="temporadas-actualizar" name="temporadas">
-
-    <label for="plataforma-actualizar">Plataforma:</label>
-    <input type="text" id="plataforma-actualizar" name="plataforma">
-
-    <label for="estreno-actualizar">Año de estreno:</label>
-    <input type="number" id="estreno-actualizar" name="estreno">
-
-    <label for="finalizada-actualizar">Finalizada:</label>
-    <input type="checkbox" id="finalizada-actualizar" name="finalizada">
-
-    <label for="director-actualizar">Director:</label>
-    <input type="text" id="director-actualizar" name="director">
-
-    <label for="actores-actualizar">Actores (separados por coma):</label>
-    <input type="text" id="actores-actualizar" name="actores">
-
-    <label for="nota-actualizar">Nota:</label>
-    <input type="number" id="nota-actualizar" name="nota" step="0.1" min="0" max="10">
-
-    <input type="submit" value="Actualizar">
-</form>
-<form id="formularioBorrarSerie">
-    <label for="id-serie-borrar">ID de la serie a borrar:</label>
-    <input type="number" id="id-serie-borrar" name="id">
-    <input type="submit" value="Borrar">
-</form>
-
-<form id="formularioActoresOrden">
-    <label for="orden">Ordenar actores por nombre:</label>
-    <select id="orden" name="orden">
-        <option value="asc">Ascendente (A→Z)</option>
-        <option value="desc">Descendente (Z→A)</option>
-    </select>
-    <input type="submit" value="Ordenar">
-</form>
-<form id="formularioMaximaNota">
-    <input type="submit" value="Calcular máxima nota">
-</form>
-<div id="resultadoMaximaNota"></div>
-<form id="formularioRanking">
-    <label for="n">Número de series del ranking:</label>
-    <input type="number" id="n" name="n" min="1">
-    <input type="submit" value="Ver ranking">
-</form>
-<div id="resultadoRanking"></div>
-<form id="formularioTotalActores">
-    <input type="submit" value="Ver total de actores">
-</form>
-<div id="resultadoTotalActores"></div>
+ 
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="logo">Trabajo<em>Final</em></div>
+    <nav>
+      <button class="tab-btn active" data-tab="series">Series</button>
+      <button class="tab-btn" data-tab="actores">Actores</button>
+      <button class="tab-btn" data-tab="gestionar">Gestionar</button>
+      <button class="tab-btn" data-tab="estadisticas">Estadísticas</button>
+    </nav>
+  </div>
+</header>
+ 
+<main>
+ 
+  <!-- ═══════════════ TAB: SERIES ═══════════════ -->
+  <div id="tab-series" class="tab-content active">
+ 
+    <!-- Búsqueda avanzada -->
+    <section class="section-block">
+      <h2 class="section-heading">Buscar series</h2>
+      <div class="search-grid">
+        <input type="number" id="b-id"            placeholder="ID" />
+        <input type="text"   id="b-titulo"        placeholder="Título" />
+        <input type="text"   id="b-genero"        placeholder="Género" />
+        <input type="text"   id="b-plataforma"    placeholder="Plataforma" />
+        <input type="text"   id="b-director"      placeholder="Director" />
+        <input type="text"   id="b-actor"         placeholder="Actor" />
+        <select id="b-finalizada">
+          <option value="">Todas</option>
+          <option value="true">Finalizadas</option>
+          <option value="false">En emisión</option>
+        </select>
+        <input type="number" id="b-notaMin"       placeholder="Nota mínima" step="0.1" />
+        <input type="number" id="b-notaMax"       placeholder="Nota máxima" step="0.1" />
+        <input type="number" id="b-estrenoDe"     placeholder="Estreno desde" />
+        <input type="number" id="b-estrenoHasta"  placeholder="Estreno hasta" />
+        <input type="number" id="b-temporadasMin" placeholder="Temporadas mínimo" />
+        <input type="number" id="b-temporadasMax" placeholder="Temporadas máximo" />
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="busquedaAvanzada()">Buscar</button>
+        <button class="btn-ghost"   onclick="cargarSeries()">Ver todas</button>
+      </div>
+      <div id="resultado" class="cards-grid"></div>
+    </section>
+ 
+    <!-- Crear serie -->
+    <section class="section-block alt">
+      <h2 class="section-heading">Añadir serie</h2>
+      <form id="formulario" class="form-grid">
+        <input type="text"     id="titulo"     placeholder="Título *" required />
+        <input type="text"     id="genero"     placeholder="Género *" required />
+        <input type="number"   id="temporadas" placeholder="Temporadas *" required />
+        <input type="text"     id="plataforma" placeholder="Plataforma *" required />
+        <input type="number"   id="estreno"    placeholder="Año de estreno *" required />
+        <input type="text"     id="director"   placeholder="Director *" required />
+        <input type="text"     id="actores"    placeholder="Actores (separados por coma) *" required />
+        <input type="number"   id="nota"       placeholder="Nota (0-10) *" step="0.1" min="0" max="10" required />
+        <label class="checkbox-label">
+          <input type="checkbox" id="finalizada" />
+          <span>Serie finalizada</span>
+        </label>
+        <button type="submit" class="btn-primary full-width">Guardar serie</button>
+      </form>
+    </section>
+ 
+    <!-- Actualizar serie -->
+    <section class="section-block">
+      <h2 class="section-heading">Actualizar serie</h2>
+      <form id="formularioActualizarSerie" class="form-grid">
+        <input type="number" id="id-serie-actualizar"  placeholder="ID de la serie *" required />
+        <input type="text"   id="titulo-actualizar"    placeholder="Título *" required />
+        <input type="text"   id="genero-actualizar"    placeholder="Género *" required />
+        <input type="number" id="temporadas-actualizar"placeholder="Temporadas *" required />
+        <input type="text"   id="plataforma-actualizar"placeholder="Plataforma *" required />
+        <input type="number" id="estreno-actualizar"   placeholder="Año de estreno *" required />
+        <input type="text"   id="director-actualizar"  placeholder="Director *" required />
+        <input type="text"   id="actores-actualizar"   placeholder="Actores (separados por coma) *" required />
+        <input type="number" id="nota-actualizar"      placeholder="Nota (0-10) *" step="0.1" min="0" max="10" required />
+        <label class="checkbox-label">
+          <input type="checkbox" id="finalizada-actualizar" />
+          <span>Serie finalizada</span>
+        </label>
+        <button type="submit" class="btn-primary full-width">Actualizar serie</button>
+      </form>
+    </section>
+ 
+    <!-- Borrar serie -->
+    <section class="section-block alt">
+      <h2 class="section-heading">Borrar serie</h2>
+      <form id="formularioBorrarSerie" class="form-inline">
+        <input type="number" id="id-serie-borrar" placeholder="ID de la serie" required />
+        <button type="submit" class="btn-danger">Borrar serie</button>
+      </form>
+    </section>
+ 
+  </div>
+ 
+  <!-- ═══════════════ TAB: ACTORES ═══════════════ -->
+  <div id="tab-actores" class="tab-content">
+ 
+    <!-- Ver actores -->
+    <section class="section-block">
+      <h2 class="section-heading">Actores</h2>
+      <div class="btn-row">
+        <button class="btn-primary" onclick="cargarActores()">Ver todos los actores</button>
+      </div>
+      <div id="resultadoPersonajes" class="cards-grid"></div>
+    </section>
+ 
+    <!-- Ordenar actores -->
+    <section class="section-block alt">
+      <h2 class="section-heading">Ordenar actores</h2>
+      <form id="formularioActoresOrden" class="form-inline">
+        <select id="orden">
+          <option value="asc">Ascendente (A→Z)</option>
+          <option value="desc">Descendente (Z→A)</option>
+        </select>
+        <button type="submit" class="btn-primary">Ordenar</button>
+      </form>
+    </section>
+ 
+    <!-- Añadir actor -->
+    <section class="section-block">
+      <h2 class="section-heading">Añadir actor</h2>
+      <form id="formularioActor" class="form-grid">
+        <input type="text"   id="nombre"       placeholder="Nombre *" required />
+        <input type="number" id="edad"         placeholder="Edad *" required />
+        <input type="text"   id="nacionalidad" placeholder="Nacionalidad *" required />
+        <input type="text"   id="serie"        placeholder="Serie *" required />
+        <input type="text"   id="personaje"    placeholder="Personaje *" required />
+        <button type="submit" class="btn-primary full-width">Guardar actor</button>
+      </form>
+    </section>
+ 
+    <!-- Actualizar actor -->
+    <section class="section-block alt">
+      <h2 class="section-heading">Actualizar actor</h2>
+      <form id="formularioActualizarActor" class="form-grid">
+        <input type="number" id="id-actualizar"          placeholder="ID del actor *" required />
+        <input type="text"   id="nombre-actualizar"      placeholder="Nombre *" required />
+        <input type="number" id="edad-actualizar"        placeholder="Edad *" required />
+        <input type="text"   id="nacionalidad-actualizar"placeholder="Nacionalidad *" required />
+        <input type="text"   id="serie-actualizar"       placeholder="Serie *" required />
+        <input type="text"   id="personaje-actualizar"   placeholder="Personaje *" required />
+        <button type="submit" class="btn-primary full-width">Actualizar actor</button>
+      </form>
+    </section>
+ 
+    <!-- Borrar actor -->
+    <section class="section-block">
+      <h2 class="section-heading">Borrar actor</h2>
+      <form id="formularioBorrarActor" class="form-inline">
+        <input type="number" id="id-borrar" placeholder="ID del actor" required />
+        <button type="submit" class="btn-danger">Borrar actor</button>
+      </form>
+    </section>
+ 
+  </div>
+ 
+  <!-- ═══════════════ TAB: ESTADÍSTICAS ═══════════════ -->
+  <div id="tab-estadisticas" class="tab-content">
+ 
+    <section class="section-block">
+      <h2 class="section-heading">Estadísticas</h2>
+      <div class="stats-grid">
+ 
+        <!-- Máxima nota -->
+        <div class="stat-card">
+          <h3>Máxima nota</h3>
+          <p>Encuentra la serie mejor valorada.</p>
+          <form id="formularioMaximaNota">
+            <button type="submit" class="btn-primary">Calcular</button>
+          </form>
+          <div id="resultadoMaximaNota" class="stat-result"></div>
+        </div>
+ 
+        <!-- Total actores -->
+        <div class="stat-card">
+          <h3>Total de actores</h3>
+          <p>Cuenta todos los actores registrados.</p>
+          <form id="formularioTotalActores">
+            <button type="submit" class="btn-primary">Calcular</button>
+          </form>
+          <div id="resultadoTotalActores" class="stat-result"></div>
+        </div>
+ 
+        <!-- Series por género -->
+        <div class="stat-card wide">
+          <h3>Series por género</h3>
+          <p>Agrupa y cuenta las series según su género.</p>
+          <form id="formularioSeriesPorGenero">
+            <button type="submit" class="btn-primary">Ver desglose</button>
+          </form>
+          <div id="resultadoSeriesPorGenero" class="cards-grid mini"></div>
+        </div>
+ 
+        <!-- Ranking -->
+        <div class="stat-card wide">
+          <h3>Ranking Top-N</h3>
+          <p>Las series mejor valoradas.</p>
+          <form id="formularioRanking" class="form-inline">
+            <input type="number" id="n" placeholder="Número de series" min="1" required />
+            <button type="submit" class="btn-primary">Ver ranking</button>
+          </form>
+          <div id="resultadoRanking" class="cards-grid mini"></div>
+        </div>
+ 
+      </div>
+    </section>
+ 
+  </div>
+ 
+  <!-- ═══════════════ TAB: GESTIONAR (resumen) ═══════════════ -->
+  <div id="tab-gestionar" class="tab-content">
+    <section class="section-block">
+      <h2 class="section-heading">Panel de gestión</h2>
+      <div class="manage-grid">
+        <div class="manage-card" onclick="switchTab('series')">
+          <div class="manage-icon">🎬</div>
+          <h3>Gestionar series</h3>
+          <p>Crear, actualizar y borrar series</p>
+        </div>
+        <div class="manage-card" onclick="switchTab('actores')">
+          <div class="manage-icon">🎭</div>
+          <h3>Gestionar actores</h3>
+          <p>Crear, actualizar y borrar actores</p>
+        </div>
+        <div class="manage-card" onclick="switchTab('estadisticas')">
+          <div class="manage-icon">📊</div>
+          <h3>Estadísticas</h3>
+          <p>Rankings, totales y análisis por género</p>
+        </div>
+        <div class="manage-card" onclick="cargarSeries(); switchTab('series')">
+          <div class="manage-icon">🔄</div>
+          <h3>Recargar todo</h3>
+          <p>Actualiza series y actores desde la API</p>
+        </div>
+      </div>
+    </section>
+  </div>
+ 
+</main>
+ 
+<!-- TOAST -->
+<div id="toast" class="toast hidden"></div>
+ 
+<script src="script.js"></script>
+<footer>
+  <div class="footer-inner">
+    <p class="footer-copy">© 2026 Cecilia Serrano Martín — Todos los derechos reservados</p>
+    </div>
+  </div>
+</footer>
 </body>
-<form id="formularioSeriesPorGenero">
-    <input type="submit" value="Ver series por género">
-</form>
-<div id="resultadoSeriesPorGenero"></div>
 </html>
