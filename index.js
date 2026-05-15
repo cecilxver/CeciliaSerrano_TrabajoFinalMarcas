@@ -10,7 +10,6 @@ app.use(cors());
 /**
  * TODO:
  * -Terminar fronted
- * - Intentar hacer uno de busqueda de cualquiera
  */
 /** CREACIÓN DE LAS LISTAS */
 let series = [
@@ -31,39 +30,100 @@ let actores=[{ id: 1, nombre: "Claudia Jessie", edad: 36, nacionalidad: "Britán
 /** MÉTODOS LISTA PRINCIPAL */
 app.get("/series", (req,res) =>{
     try{
-    const genero=req.query.genero;
-  if (!genero) {
         return res.json(series);
-    }
-    
-    const resultado= series.filter(serie => serie.genero.toLowerCase().includes(genero.toLowerCase()));
-    if(resultado==null){
-        return res.json(400).json({
-            error: "No se ha encontrado ningún genero"
-        })
-    }
-res.json(resultado);
-}catch{
+    }catch{
  return res.status(500).json({
       error: "Error interno del servidor"
    })
 }});
-    app.get("/series/:id", (req, res) => {
-        try{
-        const serie = series.find(series => series.id === Number(req.params.id));
-        if (!serie) {
+app.get("/series/buscar", (req,res)=>{
+try{
+    const { titulo, genero, plataforma, director, actor, finalizada, notaMin, notaMax, 
+    estrenoDes, estrenoDe, estrenoHasta, temporadasMin, temporadasMax } = req.query;   //objeto con todos los parámetros de la URL
+let resultado = [...series]; //crea una copia del array
+if (titulo) { //si hay titulo y no es nulo
+    resultado = resultado.filter(function(s) {
+        return s.titulo.toLowerCase().includes(titulo.toLowerCase());
+    });
+}
 
-            return res.status(404).json({
-                error: "Serie no encontrada"
-            });
+if (genero) {
+    resultado = resultado.filter(function(s) {
+        return s.genero.toLowerCase().includes(genero.toLowerCase());
+    });
+}
+
+if (plataforma) {
+    resultado = resultado.filter(function(s) {
+        return s.plataforma.toLowerCase().includes(plataforma.toLowerCase());
+    });
+}
+
+if (director) {
+    resultado = resultado.filter(function(s) {
+        return s.director.toLowerCase().includes(director.toLowerCase());
+    });
+}
+
+if (actor) {
+    resultado = resultado.filter(function(s) {
+        return s.actores.some(function(a) {
+            return a.toLowerCase().includes(actor.toLowerCase());
+        });
+    });
+}
+
+if (finalizada !== undefined) {
+    resultado = resultado.filter(function(s) {
+        return s.finalizada === (finalizada === "true");
+    });
+}
+
+if (notaMin) {
+    resultado = resultado.filter(function(s) {
+        return s.nota >= Number(notaMin);
+    });
+}
+
+if (notaMax) {
+    resultado = resultado.filter(function(s) {
+        return s.nota <= Number(notaMax);
+    });
+}
+
+if (estrenoDe) {
+    resultado = resultado.filter(function(s) {
+        return s.estreno >= Number(estrenoDe);
+    });
+}
+
+if (estrenoHasta) {
+    resultado = resultado.filter(function(s) {
+        return s.estreno <= Number(estrenoHasta);
+    });
+}
+
+if (temporadasMin) {
+    resultado = resultado.filter(function(s) {
+        return s.temporadas >= Number(temporadasMin);
+    });
+}
+
+if (temporadasMax) {
+    resultado = resultado.filter(function(s) {
+        return s.temporadas <= Number(temporadasMax);
+    });
+}
+        if (resultado.length === 0) {
+            return res.status(404).json({ error: "No se encontraron series con esos filtros" });
         }
-        return res.json(serie);
-    } catch (error) {
-
-   return res.status(500).json({
+        return res.json(resultado);
+    }catch{
+ return res.status(500).json({
       error: "Error interno del servidor"
-   });
-}});
+   }) 
+}})
+
     app.post("/guardar-serie", (req,res) =>{
         try{
     let nuevaSerie = {
@@ -199,7 +259,7 @@ app.get("/actores", (req, res) => {
         error: "Datos incompletos"
     })
 }
-    series.push(nuevoActor);
+    actores.push(nuevoActor);
     return res.status(200).json(nuevoActor);
     }catch{
  return res.status(500).json({
@@ -248,16 +308,6 @@ app.delete("/borrar-actor", (req,res) => {
    });
 }})
 
-app.get("/series-nota", (req,res)=>{
-    try{
-    const nota= req.query.nota;
-    const resultado=series.filter(serie=>serie.nota>nota);
-    res.json(resultado);
-    }catch{
- return res.status(500).json({
-      error: "Error interno del servidor"
-   });
-}});
 app.get("/actores-orden", (req,res)=>{
     try{
     const orden=req.query.orden;
@@ -278,27 +328,7 @@ app.get("/actores-orden", (req,res)=>{
       error: "Error interno del servidor"
    });
 }});
-app.get("/series-terminada",(req,res)=>{
-    try{
-    const fin=req.query.fin;
-    if(fin.toLowerCase()==="true"){
-        const resultado=series.filter(serie =>serie.finalizada ===true);
-    return res.json(resultado);
 
-    }else if(fin.toLowerCase()==="false"){
-            const resultado=series.filter(serie =>serie.finalizada===false);
-    return res.json(resultado);
-    }else{
-            return res.status(400).json({
-                error: 'Datos inválidos, debe usar "true" o "false"'
-            });
-        }
-
-        }catch{
- return res.status(500).json({
-      error: "Error interno del servidor"
-   });
-}});
     app.get("/calcular-maxima-nota",(req,res)=>{
         try{
         const notas = series.map(serie => serie.nota);
